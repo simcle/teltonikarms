@@ -1,0 +1,23 @@
+DOC API 
+
+DATA PLC
+method      : get 
+endpoint    : http:/10.10.40.19:3000/api/plc
+response    : JSON
+
+[
+  {
+    "name": "supiturang01",
+    "level": {
+      "value": 1.38,
+      "unit": "m"
+    },
+    "flow": {
+      "value": 0,
+      "unit": "L/s"
+    },
+    "status": "success",
+    "timestamp": "2025-05-13T09:29:21.283Z"
+  },
+  ........
+]
