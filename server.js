@@ -5,6 +5,8 @@ import deviceRouter from './src/routes/deviceRoutes.js'
 import smsRouter from './src/routes/smsRoutes.js'
 import notificationRouter from './src/routes/notificationRoutes.js'
 import serviceRouter from './src/routes/serviceRouter.js'
+import plcRouter from './src/routes/plcRoutes.js'
+
 import path from 'path'
 import { fileURLToPath } from 'url'
 
@@ -30,6 +32,7 @@ app.use('/api/devices', deviceRouter)
 app.use('/api/sms', smsRouter)
 app.use('/api/notification', notificationRouter)
 app.use('/api/mobile-usage', serviceRouter)
+app.use('/api/plc', plcRouter)
 
 app.get(/^\/(?!api).*/, (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html')) // ganti 'public' kalau pakai 'dist'

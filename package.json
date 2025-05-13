@@ -15,6 +15,7 @@
     "dayjs": "^1.11.13",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "modbus-serial": "^8.0.21-no-serial-port",
     "mqtt": "^5.12.1",
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7"
