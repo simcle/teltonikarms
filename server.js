@@ -14,6 +14,7 @@ import { connectMqtt, subscribe, publish } from './src/mqttClient.js'
 
 connectMqtt('mqtt://10.10.40.19:1883')
 subscribe('device/+')
+import './src/controllers/flowMeterAssignment.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
