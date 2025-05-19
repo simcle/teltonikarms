@@ -89,4 +89,4 @@ const devicesUpdate = async () => {
 
 setInterval(() => {
     devicesUpdate()
-}, 10000)
+}, 60000)
