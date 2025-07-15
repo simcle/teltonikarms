@@ -65,10 +65,10 @@ class PLCClient {
 
   async write(addr, values) {
     if (!this.connected) return false
-    if(values > 3500 || values < 0) {
-      console.warn(`[${this.name}] Write skipped: value ${values} out of range.`);
-      return false
-    }
+    // if(values > 3500 || values < 0) {
+    //   console.warn(`[${this.name}] Write skipped: value ${values} out of range.`);
+    //   return false
+    // }
     try {
       await this.client.writeRegister(addr, values)
       return true
