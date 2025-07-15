@@ -17,8 +17,8 @@ const plcB = {
   writeAddr: 43
 }
 
-const pollingInterval = 5000
-const reconnectDelay = 5000
+const pollingInterval = 5500
+const reconnectDelay = 5500
 
 class PLCClient {
   constructor(name, ip, port, unitId) {
@@ -54,8 +54,8 @@ class PLCClient {
       const res = await this.client.readHoldingRegisters(addr, qty)
       const floatValue = res.buffer.readFloatBE(0).toFixed(2)
       const parserToFloat = parseFloat(floatValue)
-      const sacledValue = Math.round(parserToFloat * 100)
-      return sacledValue
+      const scaledValue = Math.round(parserToFloat * 100)
+      return scaledValue
     } catch (err) {
       console.error(`[${this.name}] Read error:`, err.message)
       this._handleDisconnect()
@@ -65,6 +65,10 @@ class PLCClient {
 
   async write(addr, values) {
     if (!this.connected) return false
+    if(values > 3500 || values < 0) {
+      console.warn(`[${this.name}] Write skipped: value ${values} out of range.`);
+      return false
+    }
     try {
       await this.client.writeRegister(addr, values)
       return true
