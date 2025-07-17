@@ -1,5 +1,7 @@
 import ModbusRTU from "modbus-serial"
 
+const holding = new Uint16Array(100).fill(0)
+
 const plcA = {
   name: "PLC_A",
   ip: "192.168.0.11",
@@ -94,16 +96,45 @@ const clientB = new PLCClient(plcB.name, plcB.ip, plcB.port, plcB.unitId)
 
 // Start koneksi awal
 clientA.connect()
-clientB.connect()
+// clientB.connect()
 
 // Loop Assignment
 setInterval(async () => {
   const data = await clientA.read(plcA.readAddr, plcA.qty)
   if (!data) return
-  console.log(data)
-
-  const success = await clientB.write(plcB.writeAddr, data)
-  if (success) {
-    console.log(`[INFO] Transfer dari ${plcA.name} ke ${plcB.name}:`, data)
+  if(data < 3500 || data >= 0) {
+    console.log(data)
+    holding[44] = data
   }
+
+  // const success = await clientB.write(plcB.writeAddr, data)
+  // if (success) {
+  //   console.log(`[INFO] Transfer dari ${plcA.name} ke ${plcB.name}:`, data)
+  // }
 }, pollingInterval)
+
+
+
+const vector = {
+  getHoldingRegister: function(addr, unitID) {
+    console.log(`[MODBUS] Read holding[${addr}]`)
+    return Promise.resolve(holding[addr])
+  },
+  setRegister: function(addr, value, unitID) {
+    console.log(`[MODBUS] Write holding[${addr}] = ${value}`)
+    holding[addr] = value
+    return Promise.resolve()
+  }
+}
+
+const serverTCP = new ModbusRTU.ServerTCP(vector, {
+  host: "0.0.0.0",
+  port: 8502,
+  debug: true,
+  unitID: 1
+})
+
+serverTCP.on("socketError", function(err){
+    // Handle socket error if needed, can be ignored
+    console.error(err);
+});
