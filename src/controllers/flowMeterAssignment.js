@@ -104,7 +104,7 @@ setInterval(async () => {
   if (!data) return
   if(data < 3500 || data >= 0) {
     console.log(data)
-    holding[44] = data
+    holding[43] = data
   }
 
   // const success = await clientB.write(plcB.writeAddr, data)
