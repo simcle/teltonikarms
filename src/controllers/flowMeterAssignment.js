@@ -96,14 +96,13 @@ const clientB = new PLCClient(plcB.name, plcB.ip, plcB.port, plcB.unitId)
 
 // Start koneksi awal
 clientA.connect()
-// clientB.connect()
+clientB.connect()
 
 // Loop Assignment
 setInterval(async () => {
   const data = await clientA.read(plcA.readAddr, plcA.qty)
   if (!data) return
   if(data < 3500 || data >= 0) {
-    console.log(data)
     holding[43] = data
   }
 
