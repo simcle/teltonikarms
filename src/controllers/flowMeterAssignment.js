@@ -107,10 +107,10 @@ setInterval(async () => {
     holding[43] = data
   }
 
-  // const success = await clientB.write(plcB.writeAddr, data)
-  // if (success) {
-  //   console.log(`[INFO] Transfer dari ${plcA.name} ke ${plcB.name}:`, data)
-  // }
+  const success = await clientB.write(plcB.writeAddr, data)
+  if (success) {
+    console.log(`[INFO] Transfer dari ${plcA.name} ke ${plcB.name}:`, data)
+  }
 }, pollingInterval)
 
 
