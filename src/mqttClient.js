@@ -8,7 +8,7 @@ const devices = []
 
 let client = null
 
-export const connectMqtt = (brokerUrl = 'mqtt://localhost:1883', options = {}) => {
+export const connectMqtt = (brokerUrl = 'mqtt://10.10.40.19:1883', options = {}) => {
     client = mqtt.connect(brokerUrl, {
       clientId: 'mqtt_server_' + Math.random().toString(16).slice(2, 8),
       reconnectPeriod: 3000,

@@ -7,6 +7,7 @@ import notificationRouter from './src/routes/notificationRoutes.js'
 import serviceRouter from './src/routes/serviceRouter.js'
 import plcRouter from './src/routes/plcRoutes.js'
 import './src/utils/interlocks.js'
+import './src/utils/pingHelper.js'
 
 import path from 'path'
 import { fileURLToPath } from 'url'

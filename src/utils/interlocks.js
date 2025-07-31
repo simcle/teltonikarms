@@ -13,7 +13,7 @@ const interlocks = [
     },
     targets: [
       {
-        name: "supiturang01",
+        name: "supiturang02",
         ip: "192.168.1.25",
         port: 502,
         unitId: 1,
