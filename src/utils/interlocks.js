@@ -1,50 +1,76 @@
 import ModbusRTU from "modbus-serial";
 
-const itnerlocks = [
-    {
-        name: 'supiturang01',
-        source: {
-            ip: '192.168.0.11',
-            port: 502,
-            unitId: 1,
-            readAddr: 3002,
-            qty: 2,
-            itnerval: 5500
-        },
-        targets: [
-            {
-                name: 'supiturang01',
-                ip: '192.168.0.25',
-                unitId: 1,
-                writeAddr: 43 // 44 -> base on register 0
-            },
-            {
-                name: 'supiturang02',
-                ip: '192.168.1.25',
-                unitId: 1,
-                writeAddr: 47 // 47 -> base on register 0
-            }
-        ]
-    }
-]
+const interlocks = [
+  {
+    name: "supiturang01",
+    source: {
+      ip: "192.168.0.25",
+      port: 502,
+      unitId: 1,
+      readAddr: 46, // 47
+      qty: 1,
+      interval: 1000 // ms
+    },
+    targets: [
+      {
+        name: "supiturang01",
+        ip: "192.168.1.25",
+        port: 502,
+        unitId: 1,
+        writeAddr: 46
+      }
+    ]
+  }
+];
 
-const bridgePLC = async (config) => {
-    const clientSource = new ModbusRTU()
-    const clientTarget = config.targets.map(() => new ModbusRTU())
+const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
-    while(true) {
+async function bridgePLC(config) {
+  const clientSource = new ModbusRTU();
+  const clientTargets = config.targets.map(() => new ModbusRTU());
+
+  // Connect Source
+  await clientSource.connectTCP(config.source.ip, { port: config.source.port });
+  clientSource.setID(config.source.unitId);
+
+  // Connect Target(s)
+  for (let i = 0; i < config.targets.length; i++) {
+    await clientTargets[i].connectTCP(config.targets[i].ip, {
+      port: config.targets[i].port
+    });
+    clientTargets[i].setID(config.targets[i].unitId);
+  }
+
+  console.log(`[${config.name}] Bridge started...`);
+
+  while (true) {
+    try {
+      // 1. Read from Source
+      const data = await clientSource.readHoldingRegisters(
+        config.source.readAddr,
+        config.source.qty
+      );
+      const value = data.data[0];
+      console.log(value)
+      // 2. Kirim ke semua target
+      for (let i = 0; i < config.targets.length; i++) {
+        const target = config.targets[i];
         try {
-            await clientSource.connectTCP(config.source.ip, {port: config.source.port})
-            clientSource.setID(config.source.unitId)
-
-            for(let i = 0; i < config.targets.length; i++) {
-                const t = config.targets[i]
-                await clientTarget[i].connectTCP(t.ip, {port: t.port})
-                
-            }
-        } catch (error) {
-            
+          await clientTargets[i].writeRegister(target.writeAddr, value);
+          console.log(`[${target.name}] Write value ${value}`);
+        } catch (err) {
+          console.error(`[${target.name}] Write error:`, err.message);
         }
+      }
+    } catch (err) {
+      console.error(`[${config.name}] Read error:`, err.message);
     }
 
+    await delay(config.source.interval);
+  }
+}
+
+// Jalankan semua interlocks
+for (const interlock of interlocks) {
+  bridgePLC(interlock);
 }
