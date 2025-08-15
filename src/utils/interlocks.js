@@ -17,7 +17,8 @@ const interlocks = [
         ip: "192.168.1.25",
         port: 502,
         unitId: 1,
-        writeAddr: 46
+        writeAddr: 46,
+        errorReg: 53 //
       }
     ]
   }
@@ -57,7 +58,9 @@ async function bridgePLC(config) {
         try {
           await clientTargets[i].writeRegister(target.writeAddr, value);
           console.log(`[${target.name}] Write value ${value}`);
+          await clientTargets[i].writeCoil(target.errorReg, 0)
         } catch (err) {
+          await clientTargets[i].writeCoil(target.errorReg, 1)
           console.error(`[${target.name}] Write error:`, err.message);
         }
       }
