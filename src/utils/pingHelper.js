@@ -23,7 +23,6 @@ async function checkPlcConnection(plcIps) {
             };
         })
     );
-
     publish('backend/plc/status', results)
 }
 

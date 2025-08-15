@@ -51,7 +51,6 @@ async function bridgePLC(config) {
         config.source.qty
       );
       const value = data.data[0];
-      console.log(value)
       // 2. Kirim ke semua target
       for (let i = 0; i < config.targets.length; i++) {
         const target = config.targets[i];

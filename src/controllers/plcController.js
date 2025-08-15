@@ -3,6 +3,7 @@ import ModbusRTU from "modbus-serial"
 
 const plcs = [
     {name: 'supiturang01', ip: '192.168.0.25', port: 502, unitId: 1, startAddr: 40, qty: 4},
+    {name: 'supiturang01', ip: '192.168.1.25', port: 502, unitId: 1, startAddr: 40, qty: 4},
 ]
 
 export const getAllPlcs = async (req, res) => {
