@@ -53,7 +53,7 @@ export const subscribe = (topic) => {
   
 export const publish = (topic, message) => {
     if (!client) return console.warn('[MQTT] Not connected')
-    client.publish(topic, typeof message === 'string' ? message : JSON.stringify(message))
+    client.publish(topic, typeof message === 'string' ? message : JSON.stringify(message), { retain: true})
 }
 
 
