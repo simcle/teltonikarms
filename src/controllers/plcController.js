@@ -3,7 +3,7 @@ import ModbusRTU from "modbus-serial"
 
 const plcs = [
     {name: 'supiturang01', ip: '192.168.0.25', port: 502, unitId: 1, startAddr: 40, qty: 4},
-    {name: 'supiturang02', ip: '192.168.1.25', port: 502, unitId: 1, startAddr: 40, qty: 4},
+    {name: 'supiturang02', ip: '192.168.1.25', port: 502, unitId: 1, startAddr: 40, qty: 8},
 ]
 
 export const getAllPlcs = async (req, res) => {
@@ -15,20 +15,40 @@ export const getAllPlcs = async (req, res) => {
             client.setID(plc.unitId)
             client.setTimeout(2000)
             const data = await client.readHoldingRegisters(plc.startAddr, plc.qty)
-            console.log(data)
-            result.push({
-                name: plc.name,
-                level: {
-                    value: data.data[0] / 100,
-                    unit: 'm',
-                },
-                flow: {
-                    value: data.data[3] /100,
-                    unit: 'L/s'
-                },
-                status: 'success',
-                timestamp: new Date() 
-            })
+            if(data.data.length == 4) {
+                result.push({
+                    name: plc.name,
+                    level: {
+                        value: data.data[0] / 100,
+                        unit: 'm',
+                    },
+                    flow: {
+                        value: data.data[3] /100,
+                        unit: 'L/s'
+                    },
+                    status: 'success',
+                    timestamp: new Date() 
+                })
+            } else if(data.data.length > 4) {
+                result.push({
+                    name: plc.name,
+                    level: {
+                        value: data.data[0] / 100,
+                        unit: 'm',
+                    },
+                    flow: {
+                        value: data.data[3] /100,
+                        unit: 'L/s'
+                    },
+                    flow_out: {
+                        value: data.data[7]/100,
+                        unit: 'L/s'
+                    },
+                    status: 'success',
+                    timestamp: new Date() 
+                })
+            }
+            
            
         } catch (err) {
             result.push({
