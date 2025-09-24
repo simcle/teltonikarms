@@ -1,3 +1,4 @@
+import dayjs from "dayjs"
 import ModbusRTU from "modbus-serial"
 
 
@@ -7,6 +8,7 @@ const plcs = [
 ]
 
 export const getAllPlcs = async (req, res) => {
+    const date = dayjs().format('YYYY-MM-DD HH:mm:ss')
     const result = []
     for(const plc of plcs) {
         const client = new ModbusRTU()
@@ -27,7 +29,7 @@ export const getAllPlcs = async (req, res) => {
                         unit: 'L/s'
                     },
                     status: 'success',
-                    timestamp: new Date() 
+                    timestamp: date 
                 })
             } else if(data.data.length > 4) {
                 result.push({
@@ -45,7 +47,7 @@ export const getAllPlcs = async (req, res) => {
                         unit: 'L/s'
                     },
                     status: 'success',
-                    timestamp: new Date() 
+                    timestamp: date 
                 })
             }
             
