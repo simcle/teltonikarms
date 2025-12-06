@@ -5,6 +5,7 @@ const plcIps = [
     {deviceIp: '192.168.0.11', plcIp: '192.168.0.25'},
     {deviceIp: '192.168.1.11', plcIp: '192.168.1.25'},
     {deviceIp: '192.168.2.11', plcIp: '192.168.2.25'},
+    {deviceIp: '192.168.3.11', plcIp: '192.168.3.25'},
 ]
 
 async function checkPlcConnection(plcIps) {
