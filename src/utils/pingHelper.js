@@ -8,7 +8,7 @@ const plcIps = [
     {deviceIp: '192.168.3.11', plcIp: '192.168.3.25'},
 ]
 
-async function checkPlcConnection(plcIps) {
+export async function checkPlcConnection(plcIps) {
     const results = await Promise.all(
         plcIps.map(async (plc) => {
             const resDevice = await ping.promise.probe(plc.deviceIp, { timeout: 2 });

@@ -1,10 +1,12 @@
 import initDB from "../models/databse.js";
 import { getAllDevices, insertDevice, puteDevice} from "../models/deviceModel.js";
+import { checkPlcConnection } from "../utils/pingHelper.js";
 
 export const listDevices = async (req, res) => {
     try {
         const db = await initDB()
         const devices = await getAllDevices(db)
+        checkPlcConnection()
         res.status(200).json(devices)
     } catch (error) {
         res.status(400).send(error)
