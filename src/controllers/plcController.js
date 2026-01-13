@@ -5,7 +5,7 @@ import axios from "axios"
 const plcs = [
     {name: 'supiturang01', ip: '192.168.0.25', port: 502, unitId: 1, startAddr: 40, qty: 4},
     {name: 'supiturang02', ip: '192.168.1.25', port: 502, unitId: 1, startAddr: 40, qty: 8},
-    // {name: 'mulyorejo', ip: '192.168.3.25', port: 502, unitId: 1, startAddr: 40, qty: 4},
+    {name: 'mulyorejo', ip: '192.168.3.25', port: 502, unitId: 1, startAddr: 40, qty: 8},
 ]
 
 export const getAllPlcs = async (req, res) => {
@@ -18,7 +18,7 @@ export const getAllPlcs = async (req, res) => {
             client.setID(plc.unitId)
             client.setTimeout(2000)
             const data = await client.readHoldingRegisters(plc.startAddr, plc.qty)
-            if(data.data.length == 4) {
+            if(plc.name === 'supiturang01') {
                 result.push({
                     name: plc.name,
                     level: {
@@ -32,7 +32,8 @@ export const getAllPlcs = async (req, res) => {
                     status: 'success',
                     timestamp: date 
                 })
-            } else if(data.data.length > 4) {
+            }
+            if(plc.name === 'supiturang02') {
                 result.push({
                     name: plc.name,
                     level: {
@@ -50,10 +51,39 @@ export const getAllPlcs = async (req, res) => {
                     status: 'success',
                     timestamp: date 
                 })
-                sendToThikspeak(data.data[0]/100, data.data[3]/100, data.data[7]/100)
             }
-            
-           
+            if(plc.name === 'mulyorejo') {
+                result.push({
+                    name: plc.name,
+                    level: {
+                        value: data.data[0] / 100,
+                        unit: 'm',
+                    },
+                    flow_out_pump1: {
+                        value: data.data[1] /100,
+                        unit: 'L/s'
+                    },
+                    pressure_pump1: {
+                        value: data.data[2] /100,
+                        unit: 'bar'
+                    },
+                    flow_out_pump2: {
+                        value: data.data[3] /100,
+                        unit: 'L/s'
+                    },
+                    pressure_pump2: {
+                        value: data.data[4] /100,
+                        unit: 'bar'
+                    },
+                    flow_out_wt: {
+                        value: data.data[5] /100,
+                        unit: 'L/s'
+                    },
+                    status: 'success',
+                    timestamp: date
+                })
+            }
+        
         } catch (err) {
             result.push({
                 name: plc.name,
