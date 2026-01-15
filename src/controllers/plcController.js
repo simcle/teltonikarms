@@ -37,7 +37,7 @@ export const getAllPlcs = async (req, res) => {
                 result.push({
                     name: plc.name,
                     level: {
-                        value: data.data[0] / 100,
+                        value: data.data[0] / 1000,
                         unit: 'm',
                     },
                     flow: {
