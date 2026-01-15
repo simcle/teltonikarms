@@ -75,7 +75,7 @@ export const getAllPlcs = async (req, res) => {
                         value: data.data[4] /100,
                         unit: 'bar'
                     },
-                    flow_out_wt: {
+                    flow_out: {
                         value: data.data[5] /100,
                         unit: 'L/s'
                     },
