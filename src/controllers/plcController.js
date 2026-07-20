@@ -93,8 +93,13 @@ export const getAllPlcs = async (req, res) => {
         } finally {
             try {
                 if(client.isOpen) {
-                    if(client._port &&typeof client.close) {
-                        
+                    if(client._port && typeof client.close) {
+                        await new Promise((resolve) => {
+                            client.close(() => {
+                                resolve();
+                                console.log('client close')
+                            });
+                        });   
                     }
                 }
             } catch (closeErr) {
