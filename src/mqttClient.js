@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import initDB from "./models/databse.js";
 import { getDevice, updateDecieStatus } from "./models/deviceModel.js";
 import { insertNotification } from "./models/nitificationModel.js";
+import { getIO } from "./socket.js";
 
 const devices = []
 
@@ -58,35 +59,90 @@ export const publish = (topic, message) => {
 
 
 const devicesUpdate = async () => {
+   
     const now = dayjs()
     const db = await initDB()
-    for(let i = 0; i < devices.length; i++) {
+    const io = getIO()
+
+    for (let i = 0; i < devices.length; i++) {
         const device = devices[i]
         const serial_number = device.serial_number
+
         const lastSeen = dayjs(device.last_seen)
-        const diffSecond = now.diff(lastSeen, 'second')
+
+        const diffSecond = now.diff(
+            lastSeen,
+            'second'
+        )
+
         const isOnline = diffSecond <= 10
-        const status = isOnline ? 1:0
-        const res = await getDevice(db, serial_number)
-        if(res) {
-            const onlineMessage = 'Perangkat telah online dan terhubung ke server.'
-            const offlineMessage = 'Perangkat tidak terhubung (OFFLINE) Kemungkinan gangguan jaringan, power supply, atau restart tidak normal.'
-            if(status !== res.status) {
+
+        const status = isOnline ? 1 : 0
+        
+        const res = await getDevice(
+            db,
+            serial_number
+        )
+
+        if (res) {
+            const onlineMessage =
+                'Perangkat telah online dan terhubung ke server.'
+
+            const offlineMessage =
+                'Perangkat tidak terhubung (OFFLINE) Kemungkinan gangguan jaringan, power supply, atau restart tidak normal.'
+
+            if (status !== res.status) {
+
                 const payload = {
-                    serial_number: serial_number,
-                    type: status ? 'DEVICE ONLINE': 'DEVICE OFFLINE',
-                    message: status ? onlineMessage : offlineMessage,
-                    created_at: new Date().toISOString()
+                    serial_number,
+                    type: status
+                        ? 'DEVICE ONLINE'
+                        : 'DEVICE OFFLINE',
+                    message: status
+                        ? onlineMessage
+                        : offlineMessage,
+                    created_at:
+                        new Date().toISOString()
                 }
-                await insertNotification(db, payload)
-                await updateDecieStatus(db, serial_number, status)
-                publish('backend/notif', payload)
+
+                await insertNotification(
+                    db,
+                    payload
+                )
+
+                await updateDecieStatus(
+                    db,
+                    serial_number,
+                    status
+                )
+
+                publish(
+                    'backend/notif',
+                    payload
+                )
+
+                // SOCKET.IO DASHBOARD
+                io.emit(
+                    'plc:status:dashboard',
+                    {
+                        serial_number,
+                        type: 'PLC RTU',
+                        status
+                    }
+                )
             }
         }
-        publish('backend/status', {serial_number: serial_number, status: status})
+
+        publish(
+            'backend/status',
+            {
+                serial_number,
+                status
+            }
+        )
     }
 }
 
 setInterval(() => {
     devicesUpdate()
-}, 60000)
+}, 1000)

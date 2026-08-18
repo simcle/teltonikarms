@@ -1,10 +1,21 @@
-import initDB from "../models/databse.js";
-import { getAllDevices, insertDevice, puteDevice} from "../models/deviceModel.js";
+import { getDB } from "../models/databse.js";
+import { getAllDevices, insertDevice, puteDevice, getAllDeviceMap} from "../models/deviceModel.js";
 import { checkPlcConnection, plcIps } from "../utils/pingHelper.js";
+
+export const listDeviceMap = async (req, res) => {
+  try {
+    const db = getDB()
+    const result = await getAllDeviceMap(db)
+    res.status(200).json(result)
+  } catch (error) {
+    res.status(400).send(error)
+  }
+}
+
 
 export const listDevices = async (req, res) => {
     try {
-        const db = await initDB()
+        const db = getDB()
         const devices = await getAllDevices(db)
         checkPlcConnection(plcIps)
         res.status(200).json(devices)
@@ -14,7 +25,7 @@ export const listDevices = async (req, res) => {
 }
 export const createDevice = async (req, res) => {
     try {
-        const db = await initDB()
+        const db = getDB()
         const result = await insertDevice(db, req.body)
         res.status(200).json({id: result.lastID})
     } catch (error) {
@@ -39,7 +50,7 @@ export const updateDevice = async (req, res) => {
 
     try {
 
-        const db = await initDB()
+        const db = getDB()
         const id = req.params.id 
         const device = req.body
         

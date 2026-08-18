@@ -1,4 +1,4 @@
-import initDB from "../models/databse.js";
+import { getDB } from "../models/databse.js";
 import { getDevice } from "../models/deviceModel.js";
 import axios from "axios";
 
@@ -6,7 +6,7 @@ export const getMobileUsage = async (req, res) => {
     try {
         const interval = req.query.interval
         const serial_number = req.params.serial_number
-        const db = await initDB()
+        const db = getDB()
         const result = await getDevice(db, serial_number)
         if(result) {
             const {username, password, ip_address} = result

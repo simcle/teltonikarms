@@ -97,7 +97,6 @@ export const getAllPlcs = async (req, res) => {
                         await new Promise((resolve) => {
                             client.close(() => {
                                 resolve();
-                                console.log('client close')
                             });
                         });   
                     }

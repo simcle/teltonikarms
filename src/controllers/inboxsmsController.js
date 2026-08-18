@@ -1,11 +1,11 @@
-import initDB from "../models/databse.js";
+import {getDB} from "../models/databse.js";
 import { getInboxSms, insertInboxSms, updateReadSMS, unreadInboxCount } from "../models/inboxsmsModel.js";
 import { publish } from "../mqttClient.js";
 
 export const listInboxSms = async (req, res) => {
     try {
         const serial_number = req.params.serial_number
-        const db = await initDB()
+        const db = getDB()
         const sms = await getInboxSms(db, serial_number)
         await updateReadSMS(db, serial_number)
         res.status(200).json(sms)
@@ -16,7 +16,7 @@ export const listInboxSms = async (req, res) => {
 
 export const createInboxSms = async (req, res) => {
     try {
-        const db = await initDB()
+        const db = getDB()
         const result = await insertInboxSms(db, req.body)
         publish('backend/sms', req.body)
         res.status(200).json(result)
@@ -28,7 +28,7 @@ export const createInboxSms = async (req, res) => {
 export const updatReadInboxSms = async (req, res) => {
     try {
         const serial_number = req.params.serial_number
-        const db = await initDB()
+        const db = getDB()
         await updateReadSMS(db, serial_number)
         res.status(200).json('OK')
     } catch (error) {
@@ -38,7 +38,7 @@ export const updatReadInboxSms = async (req, res) => {
 
 export const getUnreadCount = async (req, res) => {
     try {
-        const db = await initDB()
+        const db = getDB()
         const data = await unreadInboxCount(db)
         res.status(200).json(data)
     } catch (error) {

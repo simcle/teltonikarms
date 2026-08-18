@@ -1,11 +1,20 @@
+import { createServer } from 'http'
+import { Server } from 'socket.io'
+import { initSocket } from './src/socket.js'
+
 import express from 'express'
 import cors from 'cors'
+import initDB from './src/models/databse.js'
+import { startDeviceStatusScheduler } from './src/utils/deviceStatusScheduler.js'
 
 import deviceRouter from './src/routes/deviceRoutes.js'
 import smsRouter from './src/routes/smsRoutes.js'
 import notificationRouter from './src/routes/notificationRoutes.js'
 import serviceRouter from './src/routes/serviceRouter.js'
 import plcRouter from './src/routes/plcRoutes.js'
+import deviceLoggerRouter from './src/routes/deviceLoggerRoutes.js'
+import devicePressureRouter from './src/routes/devicePressureRoutes.js'
+
 import './src/utils/interlocks.js'
 import './src/utils/pingHelper.js'
 
@@ -22,6 +31,17 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 const app = express()
+
+const httpServer = createServer(app)
+const io = new Server(httpServer, {
+    cors: {
+        origin: '*'
+    }
+})
+
+initSocket(io)
+
+
 app.use(cors())
 
 app.use(express.static(path.join(__dirname, 'public')))
@@ -37,11 +57,27 @@ app.use('/api/notification', notificationRouter)
 app.use('/api/mobile-usage', serviceRouter)
 app.use('/api/plc', plcRouter)
 
+app.use('/api/device-logger', deviceLoggerRouter)
+app.use('/api/pressure', devicePressureRouter)
+
 app.get(/^\/(?!api).*/, (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html')) // ganti 'public' kalau pakai 'dist'
 })
 
 const PORT = 3000 
-app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`)
-})
+
+const starServer = async () => {
+    try {
+        await initDB()
+        startDeviceStatusScheduler()
+        httpServer.listen(PORT, () => {
+            console.log(`Server running at http://localhost:${PORT}`)
+        })
+
+    } catch (error) {
+        console.error('Server gagal dijalankan:', error)
+        process.exit(1)
+    }
+}
+
+starServer()
