@@ -1,7 +1,7 @@
 
 
-export const getDevice = async (db, deviceId) => {
-    return await db.get('SELECT * FROM devices WHERE id =?', [deviceId])
+export const getDevice = async (db, serial_number) => {
+    return await db.get('SELECT * FROM devices WHERE serial_number =?', [serial_number])
 }
 export const getAllDevices = async (db) => {
     return await db.all('SELECT * FROM devices')

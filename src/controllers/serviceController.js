@@ -8,6 +8,7 @@ export const getMobileUsage = async (req, res) => {
         const serial_number = req.params.serial_number
         const db = getDB()
         const result = await getDevice(db, serial_number)
+        console.log('hallo', result)
         if(result) {
             const {username, password, ip_address} = result
             const url = `http://${ip_address}/api`

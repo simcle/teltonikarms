@@ -1,6 +1,6 @@
 import mqtt from "mqtt";
 import dayjs from "dayjs";
-import initDB from "./models/databse.js";
+import { getDB } from "./models/databse.js";
 import { getDevice, updateDecieStatus } from "./models/deviceModel.js";
 import { insertNotification } from "./models/nitificationModel.js";
 import { getIO } from "./socket.js";
@@ -61,7 +61,7 @@ export const publish = (topic, message) => {
 const devicesUpdate = async () => {
    
     const now = dayjs()
-    const db = await initDB()
+    const db =  getDB()
     const io = getIO()
 
     for (let i = 0; i < devices.length; i++) {
@@ -145,4 +145,4 @@ const devicesUpdate = async () => {
 
 setInterval(() => {
     devicesUpdate()
-}, 1000)
+}, 60000)
