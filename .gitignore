@@ -1,2 +1,5 @@
 node_modules/
+
 src/data/device.db
+src/data/device.db-shm
+src/data/device.db-wal
