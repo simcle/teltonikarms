@@ -1,6 +1,6 @@
 import {getDB} from "../models/databse.js";
 
-import { getDeviceLogger, getAllDeviceLogger, insertDevice, putDevice, getAllDeviceLoggerMap } from "../models/deviceLogger.js";
+import { getDeviceLogger, getAllDeviceLogger, insertDevice, putDevice, deleteDeviceLogger, getAllDeviceLoggerMap } from "../models/deviceLogger.js";
 
 export const getDeviceById = async (req, res) => {
     try {
@@ -74,5 +74,44 @@ export const updateDevice = async (req, res) => {
             }
         }
         res.status(400).send(error)
+    }
+}
+
+
+export const removeDeviceLogger = async (req, res) => {
+    try {
+        const { id } = req.params
+
+        const db = getDB()
+
+        const result = await deleteDeviceLogger(
+            db,
+            id
+        )
+
+        if (!result) {
+            return res.status(404).json({
+                status: false,
+                message: 'Device logger tidak ditemukan'
+            })
+        }
+
+        return res.status(200).json({
+            status: true,
+            message: 'Device logger berhasil dihapus',
+            data: result
+        })
+
+    } catch (error) {
+        console.error(
+            'removeDeviceLogger error:',
+            error
+        )
+
+        return res.status(500).json({
+            status: false,
+            message: 'Gagal menghapus device logger',
+            error: error.message
+        })
     }
 }

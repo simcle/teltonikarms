@@ -36,7 +36,7 @@ export const getAllDeviceMap = async (db) => {
         db.all(`
             SELECT
                 id,
-                'PLC RTU' AS type,
+                'PLC Reservoir' AS type,
 
                 name,
                 serial_number,

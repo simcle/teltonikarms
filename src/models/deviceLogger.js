@@ -99,7 +99,7 @@ export const getAllDeviceLogger = async (
 
                 ${whereClause}
 
-                ORDER BY d.created_at DESC, d.id DESC
+                ORDER BY d.device_id ASC, d.id DESC
                 LIMIT ? OFFSET ?
             `,
             ...searchParams,
@@ -146,6 +146,15 @@ export const putDevice = async (db, id, device) => {
     return await db.run(
         'UPDATE deviceloggers SET device_id=?, name=?, latitude=?, longitude=? WHERE id=?',
         [device_id, name, latitude, longitude, id]
+    )
+}
+export const deleteDeviceLogger = async (db, id) => {
+    return await db.run(
+        `
+            DELETE FROM deviceloggers
+            WHERE id = ?
+        `,
+        [id]
     )
 }
 
