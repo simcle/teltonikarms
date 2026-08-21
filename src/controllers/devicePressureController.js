@@ -105,7 +105,7 @@ export const receivePressure = async (req, res) => {
             status: 1
         })
         
-        return res.status(201).send('OK')
+        return res.status(200).send('OK')
     } catch (error) {
         console.error('receivePressure error:', error)
 
