@@ -77,8 +77,8 @@ export const getPressureStatistics = async (
 
             WHERE
                 device_id = ?
-                AND datetime(recorded_at) >= datetime(?)
-                AND datetime(recorded_at) <= datetime(?)
+                AND recorded_at >= ?
+                AND recorded_at <= ?
 
             ORDER BY recorded_at ASC, id ASC
         `,
