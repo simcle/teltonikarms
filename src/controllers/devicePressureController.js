@@ -105,11 +105,7 @@ export const receivePressure = async (req, res) => {
             status: 1
         })
         
-        return res.status(201).json({
-            status: true,
-            message: 'Data pressure berhasil disimpan',
-            data
-        })
+        return res.status(201).send('OK')
     } catch (error) {
         console.error('receivePressure error:', error)
 
