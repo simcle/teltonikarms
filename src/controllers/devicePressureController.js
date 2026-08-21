@@ -23,7 +23,7 @@ export const receivePressure = async (req, res) => {
             battery,
             volt
         } = req.query
-
+        console.log('CP LOGGER',device_id)
         if (api_key !== process.env.API_KEY) {
             return res.status(401).json({
                 status: false,
